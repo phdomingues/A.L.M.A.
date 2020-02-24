@@ -1,0 +1,8 @@
+prefix=/home/pedro/Documents/TCC/rosenv/catkin_ws/install
+
+Name: roboVision
+Description: Description of roboVision
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/pedro/Documents/TCC/rosenv/catkin_ws/install/lib 
+Requires: 

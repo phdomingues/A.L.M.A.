@@ -63,9 +63,9 @@ def mark_faces(frame, gray, faces, color, focus = None, maxError = 100):
         cv2.rectangle(frame,(x1,y1), (x2,y2), color, 3)
 
         # mark mouth
-        xLeft = math.inf
+        xLeft = 999999
         xRight = 0
-        yUp = math.inf
+        yUp = 999999
         yDown = 0
 
         for point in range(0,68):
@@ -103,14 +103,14 @@ def calibration(cap, detector, waitTime = 5):
         cv2.imshow('calibration', frame)
 
         # ensures 1 face on the image
-        print("Number of faces detected: ", len(faces))
+        print("Number of faces detected: {}".format(len(faces)))
         if len(faces) != 1:
             print (">>> Please position one and only one face on the camera...")
             timeCounter = 0
             start = time.time()
         else:
             timeCounter = int(time.time() - start)
-        print(timeCounter)
+        print("time: {}".format(timeCounter))
         if timeCounter == waitTime:
             print("Calibration completed!")
             cropped_img = crop_img(gray,face_pos[0][0],face_pos[0][1])
@@ -220,16 +220,20 @@ while True:
             # cropped_patient = calibration face
             # eliminate background noise
             cropped_patient = denoise(cropped_patient)
+
             height, width, channels = frame.shape
             # find mass center
             M = cv2.moments(cropped_patient)
             # calculate x,y coordinate of center
+
+
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
             cv2.circle(cropped_patient, (cX, cY), 3, (255, 255, 255), -1)
-            cX = cX/len(cropped_patient[0])
-            cY = cY/len(cropped_patient)
+            cX = float(cX)/len(cropped_patient[0])
+            cY = float(cY)/len(cropped_patient)
             massCenter.append((cX,cY))
+            print massCenter
             print("@calibration: ({}, {})".format(cX,cY))
 
             # cropped_face = current face
@@ -241,8 +245,8 @@ while True:
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
             cv2.circle(cropped_face, (cX, cY), 3, (255, 255, 255), -1)
-            cX = cX/len(cropped_patient[0])
-            cY = cY/len(cropped_patient)
+            cX = float(cX)/len(cropped_patient[0])
+            cY = float(cY)/len(cropped_patient)
             massCenter.append((cX,cY))
             print("faceLost: ({}, {})".format(cX,cY))
             print(massCenter)

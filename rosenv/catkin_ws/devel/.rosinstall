@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/pedro/Documents/TCC/rosenv/catkin_ws/devel/setup.sh
