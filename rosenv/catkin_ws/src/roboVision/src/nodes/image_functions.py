@@ -38,8 +38,10 @@ def denoise(img):
     # img2 = cv2.medianBlur(img2, 3)
     return img2
 
-# mark faces on the image and returns the position
 def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
+    # returns:  - face_pos:     returns two points if didn't respect the max error (is not patient)
+    #           - patient_pos:  returns two points only if respects the max error (is patient)
+    #           - mouth_pos:    returns the mouth pos for the person, patient or not
 
     face_pos = ()
     patient_pos = ()
@@ -61,9 +63,9 @@ def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
     if error < maxError:
         color = (0,0,255)
         patient_pos = ((x1,y1),(x2,y2))
-    # mark rectangle on the face
-    cv2.rectangle(frame,(x1,y1), (x2,y2), color, 3)
-    # mark mouth
+        cv2.rectangle(frame,(x1,y1), (x2,y2), color, 3)
+    else:
+        face_pos = ((x1,y1),(x2,y2))
     xLeft = 999999
     xRight = 0
     yUp = 999999
@@ -85,8 +87,6 @@ def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
     # mark a rectangle on the mouth
     mouth_pos = ((xLeft,yUp),(xRight,yDown))
     cv2.rectangle(frame,mouth_pos[0],mouth_pos[1],color,3)
-    face_pos = ((x1,y1),(x2,y2))
-    # return faces_pos (coordinates for all the found faces) / patient_pos (if there is focus, return only the focused face, otherwise returns []) / mouth_pos = focus only
     return (face_pos, patient_pos, mouth_pos)
 
 def calibration(video, detector, predictor, waitTime = 5, display = True):
@@ -100,8 +100,6 @@ def calibration(video, detector, predictor, waitTime = 5, display = True):
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         height, width, channels = frame.shape
         faces = detector(gray)
-        # iterate on all the faces (face = top left and bottom right points)
-        faces_on_img = []
         for face in faces:
             face_pos,_,_ = mark_faces(frame,predictor,face,(0,255,0))
 
