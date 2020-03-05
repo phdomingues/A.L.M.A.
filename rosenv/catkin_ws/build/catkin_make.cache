@@ -1,2 +1,2 @@
-roboVision
+moveit_tutorials:roboVision
 -DCATKIN_DEVEL_PREFIX=/home/pedro/Documents/TCC/rosenv/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/pedro/Documents/TCC/rosenv/catkin_ws/install -G Unix Makefiles

@@ -34,7 +34,7 @@ def callback(data):
 
 def loop():
     rospy.init_node('calibration_node')
-    rospy.Subscriber("calibration_start", Int16, callback)
+    rospy.Subscriber("calibration_start", , callback)
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
 

@@ -1,4 +1,3 @@
 <launch>
-  <node pkg="roboVision" type="main.py" name="main_node" output="screen"/>
-  <node pkg="roboVision" type="calibration.py" name="calibration_node" output="screen"/>
+  <node pkg="roboVision" type="main2.py" name="main_node" output="screen"/>
 </launch>

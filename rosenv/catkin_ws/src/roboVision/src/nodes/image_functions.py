@@ -86,7 +86,7 @@ def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
         cv2.circle(frame,(x,y),3,color,-1)
     # mark a rectangle on the mouth
     mouth_pos = ((xLeft,yUp),(xRight,yDown))
-    cv2.rectangle(frame,mouth_pos[0],mouth_pos[1],color,3)
+    # cv2.rectangle(frame,mouth_pos[0],mouth_pos[1],color,3)
     return (face_pos, patient_pos, mouth_pos)
 
 def calibration(video, detector, predictor, waitTime = 5, display = True):
@@ -116,9 +116,9 @@ def calibration(video, detector, predictor, waitTime = 5, display = True):
             timeCounter = 0
             start = time.time()
         else:
-            timeCounter = int(time.time() - start)
+            timeCounter = time.time() - start
         print("time: {}".format(timeCounter))
-        if timeCounter == waitTime:
+        if timeCounter >= waitTime:
             print("Calibration completed!")
             cropped_img = crop_img(gray,face_pos[0],face_pos[1])
             cap.release()

@@ -14,6 +14,7 @@ import dlib # https://www.learnopencv.com/install-dlib-on-ubuntu/
 from image_functions import *
 
 MAXCOUNT = 40
+VIDEO = 1
 
 # global variables
 detector = dlib.get_frontal_face_detector() # starts the detector
@@ -44,7 +45,7 @@ def find_angle(calibration, last_found):
 
     # make the data more usefull
     vX = massCenter[1][0] - massCenter[0][0]
-    vY = massCenter[1][1] - massCenter[0][1]
+    vY = - massCenter[1][1] + massCenter[0][1]
     # + vX = go right / - vX = go left
     # + vY = go down  / - vY = go up
 
@@ -65,7 +66,7 @@ def tracking(data):
     # plot related
     plt.ion()
     # setups
-    cap = cv2.VideoCapture(0) # get the video from 0, (0 = notebook webcam)
+    cap = cv2.VideoCapture(VIDEO) # get the video from 0, (0 = notebook webcam)
     # track loop
     while True:
         # data aquirement
@@ -109,7 +110,7 @@ def loop():
     rospy.init_node('main_node')
     pub_move_arm = rospy.Publisher('move_angle', Float32, queue_size=10)
     # STEP 1 - INITIAL CALIBRATION
-    cap = cv2.VideoCapture(0) # get the video (0 = notebook webcam)
+    cap = cv2.VideoCapture(VIDEO) # get the video (0 = notebook webcam)
     rospy.loginfo("Please prepair for calibration, when ready press esc...")
     while True:
         # get data
@@ -121,14 +122,20 @@ def loop():
             cap.release()
             cv2.destroyAllWindows()
             break
-    starting_values = calibration(0, detector, predictor, waitTime = 5, display = True)
+    calibration_data = calibration(VIDEO, detector, predictor, waitTime = 5, display = True)
 
-    # STEP 2 - TRACKING
-    calib, last = tracking(starting_values)
-    # STEP 3 - FIND ANGLE AND PUBLISH
-    pub_move_arm.publish(find_angle(calib, last))
-    # STEP 4 - ENTER SEEK NEW FACE MODE
-    # .... DEVELOP STAGE
+    while True:
+        # STEP 2 - TRACKING
+        try:
+            calib, last = tracking(calibration_data)
+        except Exception as e:
+            print "Turning off ...."
+            return
+        # STEP 3 - FIND ANGLE AND PUBLISH
+        pub_move_arm.publish(find_angle(calib, last))
+        # STEP 4 - ENTER SEEK NEW FACE MODE
+        calibration_data = calibration(VIDEO, detector, predictor, waitTime = 1.5, display = True)
+        pub_move_arm.publish(-1)
     rospy.spin()
 
 if __name__ == '__main__':
