@@ -3,9 +3,10 @@
 A.L.M.A. = Autonomous Light and Multi-Assistant
 
 TCC group in automation and control engineering:
+
 	- Pedro Henrique Silva Domingues: Head of the computer vision / image processing task;
-	- Lucas Meirelles:
-	- Ângelo 
+	- Lucas Meirelles Carregaro: 
+	- Ângelo Jorge Bálsamo: 
 
 Focus:
 	Make a robotic arm capable of assisting dentists on the consultory by tracking the patient face and keep it illuminated without the interference of the dentist.
