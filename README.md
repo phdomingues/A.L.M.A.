@@ -14,3 +14,5 @@ Focus:
 - Premisses: 
 	1. dentist is wearing a mask full time. (help avoiding confusion when the face is lost by thinking the dentist is the patient)
 	2. dentist is wearing ____ (color) silicone gloves full time.
+	
+...
