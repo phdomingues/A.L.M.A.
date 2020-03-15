@@ -86,6 +86,15 @@ def mark_faces(frame, gray, faces, color, focus = None, maxError = 100):
 
     return (faces_pos, patient_pos, mouth_pos)
 
+def hist_median(array):
+    m = int(sum(array)/2)
+    idx = 0
+    while m > 0:
+        m -= array[idx]
+        idx += 1
+    idx -= 1
+    return idx
+
 def calibration(cap, detector, waitTime = 5):
     timeCounter = 0
     start = time.time()
@@ -123,7 +132,7 @@ backup = []
 useBackup = False
 
 # setups
-cap = cv2.VideoCapture(0) # get the video from 0, (0 = notebook webcam)
+cap = cv2.VideoCapture(1) # get the video from 0, (0 = notebook webcam)
 detector = dlib.get_frontal_face_detector() # starts the detector
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat") # load the points file
 
@@ -188,10 +197,11 @@ while True:
             # statistical analysis
             print("-"*50)
             # np.average(histB,weights = range(256))
-            print("Blue  : max: {:d} \t second max: {:d} \t average: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(np.max(histB), np.sort(histB)[-2], np.mean(histB), np.std(histB), np.var(histB)))
-            print("Green : max: {:d} \t second max: {:d} \t average: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(np.max(histG), np.sort(histG)[-2], np.mean(histG), np.std(histG), np.var(histG)))
-            print("Red   : max: {:d} \t second max: {:d} \t average: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(np.max(histR), np.sort(histR)[-2], np.mean(histR), np.std(histR), np.var(histR)))
-            print("Gray  : max: {:d} \t second max: {:d} \t average: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(np.max(histGray), np.sort(histGray)[-2], np.mean(histGray), np.std(histGray), np.var(histGray)))
+
+            print("Red   : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histR), hist_median(histR), np.std(histR), np.var(histR)))
+            print("Green : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histG), hist_median(histG), np.std(histG), np.var(histG)))
+            print("Blue  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histB), hist_median(histB), np.std(histB), np.var(histB)))
+            print("Gray  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histGray), hist_median(histGray), np.std(histGray), np.var(histGray)))
 
             #######################
 

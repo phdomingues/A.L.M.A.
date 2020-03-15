@@ -140,3 +140,16 @@ def loop():
 
 if __name__ == '__main__':
     loop()
+
+
+
+
+
+
+# ros
+import rospy
+    rospy.init_node('main_node')
+    pub_move_arm = rospy.Publisher('move_angle', Float32, queue_size=10)
+    rospy.loginfo("Please prepair for calibration, when ready press esc...")
+    rospy.spin()
+
