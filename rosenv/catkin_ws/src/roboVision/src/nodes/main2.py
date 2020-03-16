@@ -20,7 +20,7 @@ VIDEO = 1
 detector = dlib.get_frontal_face_detector() # starts the detector
 predictor = dlib.shape_predictor("/home/pedro/Documents/TCC/data_files/shape_predictor_68_face_landmarks.dat") # load the points file
 
-def find_angle(calibration, last_found):
+def find_angle(calibration, last_found, show=True, gloves_color="light"):
     massCenter = []
 
     calibration = denoise(calibration)
@@ -29,6 +29,7 @@ def find_angle(calibration, last_found):
     cX = int(M["m10"] / M["m00"])
     cY = int(M["m01"] / M["m00"])
     cv2.circle(calibration, (cX, cY), 3, (255, 255, 255), -1)
+    cv2.circle(last_found, (cX, cY), 3, (0, 0, 0), -1)
     cX = float(cX)/len(calibration[0])
     cY = float(cY)/len(calibration)
     massCenter.append((cX,cY))
@@ -44,24 +45,34 @@ def find_angle(calibration, last_found):
     massCenter.append((cX,cY))
 
     # make the data more usefull
-    vX = massCenter[1][0] - massCenter[0][0]
-    vY = - massCenter[1][1] + massCenter[0][1]
+    if gloves_color = "light":
+        vX = - massCenter[1][0] + massCenter[0][0]
+        vY = - massCenter[1][1] + massCenter[0][1]
+    else:
+        vX = massCenter[1][0] - massCenter[0][0]
+        vY = massCenter[1][1] - massCenter[0][1]
+
     # + vX = go right / - vX = go left
     # + vY = go down  / - vY = go up
 
     alpha = math.degrees(math.atan(abs(vY)/abs(vX)))
     if vX >= 0 and vY <= 0: angle = (alpha)
-    elif vX < 0 and vY <= 0: angle = (180 - alpha)
-    elif vX < 0 and vY > 0:  angle = (180 + alpha)
+    elif vX < 0 and vY <= 0: angle = (90 + alpha)
+    elif vX < 0 and vY > 0:  angle = (270 - alpha)
     elif vX >= 0 and vY > 0: angle = (360 - alpha)
 
+    # display images and wait for confirmation
+    if show:
+        while(cv2.waitKey(1) != 27):
+            cv2.imshow("@calibration", calibration)
+            cv2.imshow("faceLost", last_found)
     return angle
 
 def tracking(data):
     calibration_frame, patient_pos, calibration_cropped_face = data
     calibration_face = crop_img(cv2.cvtColor(calibration_frame,cv2.COLOR_BGR2GRAY),patient_pos[0],patient_pos[1])
     # auxiliar variables
-    backup = [] # last patient_face seen by the algorithm
+    backup = [] # last calibration_data[1] seen by the algorithm
     lostCounter = 0
     # plot related
     plt.ion()
@@ -107,9 +118,11 @@ def tracking(data):
     return
 
 def loop():
+    # Init a node called "main_node"
     rospy.init_node('main_node')
+    # Instance to publish under "move_angle" a float32
     pub_move_arm = rospy.Publisher('move_angle', Float32, queue_size=10)
-    # STEP 1 - INITIAL CALIBRATION
+# STEP 1 - INITIAL CALIBRATION
     cap = cv2.VideoCapture(VIDEO) # get the video (0 = notebook webcam)
     rospy.loginfo("Please prepair for calibration, when ready press esc...")
     while True:
@@ -125,31 +138,20 @@ def loop():
     calibration_data = calibration(VIDEO, detector, predictor, waitTime = 5, display = True)
 
     while True:
-        # STEP 2 - TRACKING
-        try:
-            calib, last = tracking(calibration_data)
-        except Exception as e:
-            print "Turning off ...."
-            return
-        # STEP 3 - FIND ANGLE AND PUBLISH
+# STEP 2 - TRACKING
+        # try:
+        calib, last = tracking(calibration_data)
+        # except Exception as e:
+        #     print e
+        #     print "Turning off ...."
+        #     return
+# STEP 3 - FIND ANGLE AND PUBLISH
         pub_move_arm.publish(find_angle(calib, last))
-        # STEP 4 - ENTER SEEK NEW FACE MODE
+# STEP 4 - ENTER SEEK NEW FACE MODE
         calibration_data = calibration(VIDEO, detector, predictor, waitTime = 1.5, display = True)
         pub_move_arm.publish(-1)
     rospy.spin()
 
 if __name__ == '__main__':
     loop()
-
-
-
-
-
-
-# ros
-import rospy
-    rospy.init_node('main_node')
-    pub_move_arm = rospy.Publisher('move_angle', Float32, queue_size=10)
-    rospy.loginfo("Please prepair for calibration, when ready press esc...")
-    rospy.spin()
 

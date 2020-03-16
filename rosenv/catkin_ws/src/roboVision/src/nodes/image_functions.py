@@ -100,14 +100,6 @@ def calibration(video, detector, predictor, waitTime = 5, display = True):
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         height, width, channels = frame.shape
         faces = detector(gray)
-        for face in faces:
-            face_pos,_,_ = mark_faces(frame,predictor,face,(0,255,0))
-
-        if display:
-            cv2.imshow("calibration", frame)
-            key = cv2.waitKey(1)
-            if key == 27:
-                return
 
         # ensures 1 face on the image
         print("Number of faces detected: {}".format(len(faces)))
@@ -117,10 +109,18 @@ def calibration(video, detector, predictor, waitTime = 5, display = True):
             start = time.time()
         else:
             timeCounter = time.time() - start
+            for face in faces:
+                face_pos,_,mouth_pos = mark_faces(frame,predictor,face,(0,255,0))
+        if display:
+                cv2.imshow("calibration", frame)
+                key = cv2.waitKey(1)
+                if key == 27:
+                    return
+
         print("time: {}".format(timeCounter))
         if timeCounter >= waitTime:
             print("Calibration completed!")
             cropped_img = crop_img(gray,face_pos[0],face_pos[1])
             cap.release()
             cv2.destroyAllWindows()
-            return (frame, face_pos, cropped_img)
+            return (frame_original, face_pos, cropped_img)

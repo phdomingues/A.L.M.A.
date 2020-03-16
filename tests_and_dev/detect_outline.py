@@ -142,6 +142,10 @@ calibrationImg, patient_face, cropped_patient = calibration(cap, detector)
 # plot aux for closing
 plt.ion()
 
+tracker = dlib.correlation_tracker()
+print(patient_face)
+tracker.start_track(calibrationImg, dlib.rectangle(patient_face[0][0][0], patient_face[0][0][1], patient_face[0][1][0], patient_face[0][1][1]))
+
 # STEP 2 - KEEP THE FACE DETECTED
 while True:
     # data aquirement
@@ -151,6 +155,13 @@ while True:
     height, width, channels = frame.shape
     faces = detector(gray)
     masked_img = []
+
+    pos = tracker.get_position()
+    print(pos, patient_face)
+    tracker.update(frame_original)
+
+    cv2.rectangle(frame_original,(int(pos.left()), int(pos.top())), (int(pos.right()), int(pos.bottom())), (255,0,0), 3)
+
 
     # ensures that the patient is present
     if patient_face:
@@ -198,10 +209,10 @@ while True:
             print("-"*50)
             # np.average(histB,weights = range(256))
 
-            print("Red   : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histR), hist_median(histR), np.std(histR), np.var(histR)))
-            print("Green : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histG), hist_median(histG), np.std(histG), np.var(histG)))
-            print("Blue  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histB), hist_median(histB), np.std(histB), np.var(histB)))
-            print("Gray  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histGray), hist_median(histGray), np.std(histGray), np.var(histGray)))
+            # print("Red   : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histR), hist_median(histR), np.std(histR), np.var(histR)))
+            # print("Green : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histG), hist_median(histG), np.std(histG), np.var(histG)))
+            # print("Blue  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histB), hist_median(histB), np.std(histB), np.var(histB)))
+            # print("Gray  : max: {:d} \t median: {:.2f}  \t Standard Deviation: {:.2f} \t Variance: {:.2f}".format(max(histGray), hist_median(histGray), np.std(histGray), np.var(histGray)))
 
             #######################
 
@@ -265,8 +276,8 @@ while True:
 
             alpha = math.degrees(math.atan(abs(vY)/abs(vX)))
             if vX >= 0 and vY <= 0: data = (alpha)
-            elif vX < 0 and vY <= 0: data = (180 - alpha)
-            elif vX < 0 and vY > 0:  data = (180 + alpha)
+            elif vX < 0 and vY <= 0: data = (90 + alpha)
+            elif vX < 0 and vY > 0:  data = (270 - alpha)
             elif vX >= 0 and vY > 0: data = (360 - alpha)
 
             print(data)
@@ -281,7 +292,7 @@ while True:
 
 
 
-    cv2.imshow("live", frame)
+    cv2.imshow("live", frame_original)
 
     key = cv2.waitKey(1)
     if key == 27:
