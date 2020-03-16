@@ -29,13 +29,12 @@ def find_angle(calibration, last_found, show=True, gloves_color="light"):
     cX = int(M["m10"] / M["m00"])
     cY = int(M["m01"] / M["m00"])
     cv2.circle(calibration, (cX, cY), 3, (255, 255, 255), -1)
-    cv2.circle(last_found, (cX, cY), 3, (0, 0, 0), -1)
     cX = float(cX)/len(calibration[0])
     cY = float(cY)/len(calibration)
     massCenter.append((cX,cY))
+    print "calibration center: {}".format(massCenter[0])
 
     last_found = denoise(last_found)
-    lf_height, lf_width = last_found.shape
     M = cv2.moments(last_found)
     cX = int(M["m10"] / M["m00"])
     cY = int(M["m01"] / M["m00"])
@@ -43,9 +42,10 @@ def find_angle(calibration, last_found, show=True, gloves_color="light"):
     cX = float(cX)/len(last_found[0])
     cY = float(cY)/len(last_found)
     massCenter.append((cX,cY))
+    print "last_found: {}".format(massCenter[1])
 
     # make the data more usefull
-    if gloves_color = "light":
+    if gloves_color == "light":
         vX = - massCenter[1][0] + massCenter[0][0]
         vY = - massCenter[1][1] + massCenter[0][1]
     else:
@@ -55,17 +55,26 @@ def find_angle(calibration, last_found, show=True, gloves_color="light"):
     # + vX = go right / - vX = go left
     # + vY = go down  / - vY = go up
 
+    print "vX: {}".format(vX)
+    print "vY: {}".format(vY)
     alpha = math.degrees(math.atan(abs(vY)/abs(vX)))
     if vX >= 0 and vY <= 0: angle = (alpha)
-    elif vX < 0 and vY <= 0: angle = (90 + alpha)
-    elif vX < 0 and vY > 0:  angle = (270 - alpha)
+    elif vX < 0 and vY <= 0: angle = (180 - alpha)
+    elif vX < 0 and vY > 0:  angle = (180 + alpha)
     elif vX >= 0 and vY > 0: angle = (360 - alpha)
+
+    black_img = np.zeros((500,500,3), np.uint8)
+    cv2.circle(black_img, (int(massCenter[0][0]*500), int(massCenter[0][1]*500)), 3, (255, 255, 255), -1)
+    cv2.circle(black_img, (int(massCenter[1][0]*500), int(massCenter[1][1]*500)), 3, (0, 0, 255), -1)
+    cv2.putText(black_img, "White: Calibration / Red: Last frame found", (10,400), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
+    cv2.putText(black_img, "Angle: {}".format(angle), (10,450), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
 
     # display images and wait for confirmation
     if show:
         while(cv2.waitKey(1) != 27):
             cv2.imshow("@calibration", calibration)
             cv2.imshow("faceLost", last_found)
+            cv2.imshow("Mass Center", black_img)
     return angle
 
 def tracking(data):
@@ -104,7 +113,7 @@ def tracking(data):
             print lostCounter
 
         if lostCounter == MAXCOUNT:
-            last_face_found = crop_img(backup,patient_pos[0],patient_pos[1])
+            last_face_found = crop_img(gray,patient_pos[0],patient_pos[1])
             cap.release()
             cv2.destroyAllWindows()
             return (calibration_face, last_face_found)
