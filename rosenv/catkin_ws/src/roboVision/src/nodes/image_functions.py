@@ -38,7 +38,16 @@ def denoise(img):
     # img2 = cv2.medianBlur(img2, 3)
     return img2
 
-def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
+def hist_median(array):
+    m = int(sum(array)/2)
+    idx = 0
+    while m > 0:
+        m -= array[idx]
+        idx += 1
+    idx -= 1
+    return idx
+
+def mark_faces(frame, predictor, face, color, focus = None, maxError = 100, draw=True):
     # returns:  - face_pos:     returns two points if didn't respect the max error (is not patient)
     #           - patient_pos:  returns two points only if respects the max error (is patient)
     #           - mouth_pos:    returns the mouth pos for the person, patient or not
@@ -61,9 +70,9 @@ def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
     if focus:
         error = abs((focus[0][0] - x1)) +  abs((focus[0][1] - y1)) +  abs((focus[1][0] - x2)) +  abs((focus[1][1] - y2))
     if error < maxError:
-        color = (0,0,255)
+        color = (255,0,0)
         patient_pos = ((x1,y1),(x2,y2))
-        cv2.rectangle(frame,(x1,y1), (x2,y2), color, 3)
+        if draw: cv2.rectangle(frame,(x1,y1), (x2,y2), color, 3)
     else:
         face_pos = ((x1,y1),(x2,y2))
     xLeft = 999999
@@ -83,7 +92,7 @@ def mark_faces(frame, predictor, face, color, focus = None, maxError = 100):
             if x > xRight : xRight = x
             if y > yDown  : yDown = y
         # mark landmark on screen
-        cv2.circle(frame,(x,y),3,color,-1)
+        if draw: cv2.circle(frame,(x,y),3,color,-1)
     # mark a rectangle on the mouth
     mouth_pos = ((xLeft,yUp),(xRight,yDown))
     # cv2.rectangle(frame,mouth_pos[0],mouth_pos[1],color,3)
