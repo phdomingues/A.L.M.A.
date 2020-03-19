@@ -1,27 +1,35 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages') # in order to import cv2 under python3
+
+# image related
+import cv2
+import tensorflow as tf
+from sklearn.svm import SVC
+import numpy as np
+import matplotlib.pyplot as plt
+import dlib # https://www.learnopencv.com/install-dlib-on-ubuntu/
+
+sys.path.append('/opt/ros/kinetic/lib/python2.7/dist-packages') # append back in order to import rospy
 
 # ros
 import rospy
 from std_msgs.msg import Float32
 
-# image related
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-import dlib # https://www.learnopencv.com/install-dlib-on-ubuntu/
-
 # file managing
 import csv
 import os
 import rospkg
+import pickle
 
 # custom libraries
 from image_functions import *
 
 MAXCOUNT = 40       # Maximum frames before considering the face lost
 VIDEO = 1           # Video that will be captured (0 = webcam / 1 = external webcam)
-COLECT_DATA = True  # Toggle the plot graphing for statistical data colection
-SHOW = False
+COLECT_DATA = False  # Toggle the plot graphing for statistical data colection (TURNING THIS ON WILL MESS ALL THE PREVIOUS COLECTED DATA)
+SHOW = True
 LOG = False
 
 # current folder
@@ -35,6 +43,14 @@ detector = dlib.get_frontal_face_detector() # starts the detector
 predictor_path = os.path.join(package_path,"../../../../visao/data_files/shape_predictor_68_face_landmarks.dat")
 predictor = dlib.shape_predictor(predictor_path) # load the points file
 
+# loading SVM
+svm_path = os.path.join(package_path,"../../../../visao/data_files/gausian_svm.pkl")
+file = open(svm_path, 'rb')
+svm_classifier = pickle.load(file)
+
+# loading tf model
+model = tf.keras.models.load_model(os.path.join(package_path, "../../../../visao/tests_and_dev/model.h5"))
+
 def find_angle(calibration, last_found, show=SHOW, log=LOG, gloves_color="light"):
     massCenter = []
 
@@ -47,7 +63,7 @@ def find_angle(calibration, last_found, show=SHOW, log=LOG, gloves_color="light"
     cX = float(cX)/len(calibration[0])
     cY = float(cY)/len(calibration)
     massCenter.append((cX,cY))
-    if log: print "calibration center: {}".format(massCenter[0])
+    if log: print("calibration center: {}".format(massCenter[0]))
 
     last_found = denoise(last_found)
     M = cv2.moments(last_found)
@@ -57,13 +73,17 @@ def find_angle(calibration, last_found, show=SHOW, log=LOG, gloves_color="light"
     cX = float(cX)/len(last_found[0])
     cY = float(cY)/len(last_found)
     massCenter.append((cX,cY))
-    if log: print "last_found: {}".format(massCenter[1])
+    if log: print("last_found: {}".format(massCenter[1]))
 
     # make the data more usefull
     if gloves_color == "light":
+        pt1 = (int(massCenter[1][0]*500), int(massCenter[1][1]*500))
+        pt2 = (int(massCenter[0][0]*500), int(massCenter[0][1]*500))
         vX = - massCenter[1][0] + massCenter[0][0]
         vY = - massCenter[1][1] + massCenter[0][1]
     else:
+        pt1 = (int(massCenter[0][0]*500), int(massCenter[0][1]*500))
+        pt2 = (int(massCenter[1][0]*500), int(massCenter[1][1]*500))
         vX = massCenter[1][0] - massCenter[0][0]
         vY = massCenter[1][1] - massCenter[0][1]
 
@@ -71,8 +91,8 @@ def find_angle(calibration, last_found, show=SHOW, log=LOG, gloves_color="light"
     # + vY = go down  / - vY = go up
 
     if log:
-        print "vX: {}".format(vX)
-        print "vY: {}".format(vY)
+        print("vX: {}".format(vX))
+        print("vY: {}".format(vY))
     alpha = math.degrees(math.atan(abs(vY)/abs(vX)))
     if vX >= 0 and vY <= 0: angle = (alpha)
     elif vX < 0 and vY <= 0: angle = (180 - alpha)
@@ -82,10 +102,13 @@ def find_angle(calibration, last_found, show=SHOW, log=LOG, gloves_color="light"
     # display images and wait for confirmation
     if show:
         black_img = np.zeros((500,500,3), np.uint8)
-        cv2.circle(black_img, (int(massCenter[0][0]*500), int(massCenter[0][1]*500)), 3, (255, 255, 255), -1)
+        cv2.arrowedLine(black_img, (0, pt1[1]), (500, pt1[1]), (255,255,255), 2, 8, 0, 0.1)
+        cv2.arrowedLine(black_img, (pt1[0], 500), (pt1[0], 0), (255,255,255), 2, 8, 0, 0.1)
+        cv2.arrowedLine( black_img, pt1, pt2, (255,0,0), 2, 8, 0, 0.3)
+        cv2.circle(black_img, (int(massCenter[0][0]*500), int(massCenter[0][1]*500)), 3, (0, 255, 0), -1)
         cv2.circle(black_img, (int(massCenter[1][0]*500), int(massCenter[1][1]*500)), 3, (0, 0, 255), -1)
-        cv2.putText(black_img, "White: Calibration / Red: Last frame found", (10,400), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
-        cv2.putText(black_img, "Angle: {}".format(angle), (10,450), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
+        cv2.putText(black_img, "green: Calibration / Red: Last frame found", (10,400), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
+        cv2.putText(black_img, "Angle: {} degrees".format(angle), (10,450), cv2.FONT_HERSHEY_SIMPLEX, .4, (255,255,255), 1, cv2.LINE_AA)
         while(cv2.waitKey(1) != 27):
             cv2.imshow("@calibration", calibration)
             cv2.imshow("faceLost", last_found)
@@ -162,10 +185,21 @@ def tracking(data):
                 # Crop the mouth only and generate a new image
                 frame_mouth = crop_img(frame,mouth_pos[0],mouth_pos[1])
                 frame_mouth_gray = crop_img(gray,mouth_pos[0],mouth_pos[1])
+                statistics = hist_plot(frame_mouth,frame_mouth_gray)
+                # SVM mouth classifier
+                # result = svm_classifier.predict([[item[i] for item in statistics for i in range(len(item))]])
+                # if result[0] == 0: print("obstructed")
+                # else: print("free")
+
+                dados = np.array([[int(item[i])] for item in statistics for i in range(len(item))])
+                dados = dados.transpose()
+                result = model.predict(dados)
+                if result == 0: print("free")
+                else: print("obstructed")
+
                 if COLECT_DATA:
                     with open(path,'ab') as out:
                         csv_out = csv.writer(out)
-                        statistics = hist_plot(frame_mouth,frame_mouth_gray)
                         write_data = [statistics[i][j] for i in range(4) for j in range(4)]
                         csv_out.writerow(write_data)
                         out.close()
@@ -174,7 +208,7 @@ def tracking(data):
         # if patient not in frame
         if not present:
             lostCounter += 1
-            print lostCounter
+            print(lostCounter)
 
         if lostCounter == MAXCOUNT:
             last_face_found = crop_img(gray,patient_pos[0],patient_pos[1])
@@ -215,8 +249,8 @@ def loop():
         try:
             calib, last = tracking(calibration_data)
         except Exception as e:
-            print e
-            print "Turning off ...."
+            print (e)
+            print ("Turning off ....")
             return
 # STEP 3 - FIND ANGLE AND PUBLISH
         pub_move_arm.publish(find_angle(calib, last))
@@ -227,4 +261,5 @@ def loop():
 
 if __name__ == '__main__':
     loop()
+    file.close()
 

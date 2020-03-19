@@ -26,7 +26,7 @@ Requirements:
 Python 3 dependencies:
 
 	- csv
-	- numpy
+    - pickle
 	- scikit-learn
 	
 Python 2.7 dependencies:
@@ -35,3 +35,4 @@ Python 2.7 dependencies:
 	- dlib
 	- numpy
 	- opencv
+    - pickle
