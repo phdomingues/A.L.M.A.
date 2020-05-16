@@ -1,0 +1,2 @@
+robotControl
+-DCATKIN_DEVEL_PREFIX=/home/meirelles/Documents/A.L.M.A./rosenv/catkin_control_ws/devel -DCMAKE_INSTALL_PREFIX=/home/meirelles/Documents/A.L.M.A./rosenv/catkin_control_ws/install -G Unix Makefiles
