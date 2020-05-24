@@ -1,0 +1,8 @@
+prefix=/home/meirelles/Documents/A.L.M.A./rosenv/ws_control/install
+
+Name: panda_moveit_config
+Description: Description of panda_moveit_config
+Version: 0.7.2
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

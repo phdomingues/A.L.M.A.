@@ -1,0 +1,6 @@
+devel_space: /home/meirelles/Documents/A.L.M.A./rosenv/ws_control/devel
+install: false
+install_space: /home/meirelles/Documents/A.L.M.A./rosenv/ws_control/install
+profile: default
+source_space: /home/meirelles/Documents/A.L.M.A./rosenv/ws_control/src
+workspace: /home/meirelles/Documents/A.L.M.A./rosenv/ws_control

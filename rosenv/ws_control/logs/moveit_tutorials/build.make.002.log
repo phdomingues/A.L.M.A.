@@ -1,0 +1,13 @@
+[  7%] Built target ros_api_tutorial
+[ 14%] Built target robot_model_and_robot_state_tutorial
+[ 21%] Built target planning_scene_tutorial
+[ 28%] Built target planning_scene_ros_api_tutorial
+[ 42%] Built target motion_planning_pipeline_tutorial
+[ 42%] Built target motion_planning_api_tutorial
+[ 57%] Built target interactivity_utils
+[ 64%] Built target move_group_interface_tutorial
+[ 78%] Built target state_display_tutorial
+[ 78%] Built target bag_publisher_maintain_time
+[ 85%] Built target pick_place_tutorial
+[ 92%] Built target cylinder_segment
+[100%] Built target visualizing_collisions_tutorial
