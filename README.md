@@ -8,6 +8,9 @@ TCC group in automation and control engineering:
 	- Lucas Meirelles Carregaro: Kinematic model implementation
 	- Ângelo Jorge Bálsamo: Kinematic modeling
 
+Presentation:
+https://youtu.be/JzujezFcufQ
+
 Objective:
 	Make a robotic arm capable of assisting dentists on the consultory by tracking the patient face and keep it illuminated without the interference of the dentist.
 
