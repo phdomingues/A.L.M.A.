@@ -1,0 +1,54 @@
+[35m[1mScanning dependencies of target planning_scene_tutorial[0m
+[35m[1mScanning dependencies of target robot_model_and_robot_state_tutorial[0m
+[35m[1mScanning dependencies of target ros_api_tutorial[0m
+[35m[1mScanning dependencies of target planning_scene_ros_api_tutorial[0m
+[  3%] [32mBuilding CXX object doc/robot_model_and_robot_state/CMakeFiles/robot_model_and_robot_state_tutorial.dir/src/robot_model_and_robot_state_tutorial.cpp.o[0m
+[  7%] [32mBuilding CXX object doc/kinematics/CMakeFiles/ros_api_tutorial.dir/src/ros_api_tutorial.cpp.o[0m
+[ 10%] [32mBuilding CXX object doc/planning_scene/CMakeFiles/planning_scene_tutorial.dir/src/planning_scene_tutorial.cpp.o[0m
+[ 14%] [32mBuilding CXX object doc/planning_scene_ros_api/CMakeFiles/planning_scene_ros_api_tutorial.dir/src/planning_scene_ros_api_tutorial.cpp.o[0m
+[ 17%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/planning_scene_tutorial[0m
+[ 17%] Built target planning_scene_tutorial
+[35m[1mScanning dependencies of target motion_planning_api_tutorial[0m
+[ 21%] [32mBuilding CXX object doc/motion_planning_api/CMakeFiles/motion_planning_api_tutorial.dir/src/motion_planning_api_tutorial.cpp.o[0m
+[ 25%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/robot_model_and_robot_state_tutorial[0m
+[ 28%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/ros_api_tutorial[0m
+[ 28%] Built target robot_model_and_robot_state_tutorial
+[35m[1mScanning dependencies of target motion_planning_pipeline_tutorial[0m
+[ 32%] [32mBuilding CXX object doc/motion_planning_pipeline/CMakeFiles/motion_planning_pipeline_tutorial.dir/src/motion_planning_pipeline_tutorial.cpp.o[0m
+[ 32%] Built target ros_api_tutorial
+[35m[1mScanning dependencies of target interactivity_utils[0m
+[ 35%] [32mBuilding CXX object doc/interactivity/CMakeFiles/interactivity_utils.dir/src/interactive_robot.cpp.o[0m
+[ 39%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/planning_scene_ros_api_tutorial[0m
+[ 39%] Built target planning_scene_ros_api_tutorial
+[ 42%] [32mBuilding CXX object doc/interactivity/CMakeFiles/interactivity_utils.dir/src/imarker.cpp.o[0m
+[ 46%] [32mBuilding CXX object doc/interactivity/CMakeFiles/interactivity_utils.dir/src/pose_string.cpp.o[0m
+[35m[1mScanning dependencies of target move_group_interface_tutorial[0m
+[ 50%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/motion_planning_api_tutorial[0m
+[ 53%] [32mBuilding CXX object doc/move_group_interface/CMakeFiles/move_group_interface_tutorial.dir/src/move_group_interface_tutorial.cpp.o[0m
+[ 53%] Built target motion_planning_api_tutorial
+[35m[1mScanning dependencies of target state_display_tutorial[0m
+[ 57%] [32mBuilding CXX object doc/state_display/CMakeFiles/state_display_tutorial.dir/src/state_display_tutorial.cpp.o[0m
+[ 60%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/motion_planning_pipeline_tutorial[0m
+[ 64%] [32m[1mLinking CXX shared library /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/libinteractivity_utils.so[0m
+[ 64%] Built target interactivity_utils
+[35m[1mScanning dependencies of target pick_place_tutorial[0m
+[ 67%] [32mBuilding CXX object doc/pick_place/CMakeFiles/pick_place_tutorial.dir/src/pick_place_tutorial.cpp.o[0m
+[ 67%] Built target motion_planning_pipeline_tutorial
+[35m[1mScanning dependencies of target cylinder_segment[0m
+[ 71%] [32mBuilding CXX object doc/perception_pipeline/CMakeFiles/cylinder_segment.dir/src/cylinder_segment.cpp.o[0m
+[ 75%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/state_display_tutorial[0m
+[ 78%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/move_group_interface_tutorial[0m
+[ 78%] Built target state_display_tutorial
+[35m[1mScanning dependencies of target bag_publisher_maintain_time[0m
+[ 82%] [32mBuilding CXX object doc/perception_pipeline/CMakeFiles/bag_publisher_maintain_time.dir/src/bag_publisher_maintain_time.cpp.o[0m
+[ 82%] Built target move_group_interface_tutorial
+[35m[1mScanning dependencies of target visualizing_collisions_tutorial[0m
+[ 85%] [32mBuilding CXX object doc/visualizing_collisions/CMakeFiles/visualizing_collisions_tutorial.dir/src/visualizing_collisions_tutorial.cpp.o[0m
+[ 89%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/pick_place_tutorial[0m
+[ 89%] Built target pick_place_tutorial
+[ 92%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/bag_publisher_maintain_time[0m
+[ 92%] Built target bag_publisher_maintain_time
+[ 96%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/visualizing_collisions_tutorial[0m
+[ 96%] Built target visualizing_collisions_tutorial
+[100%] [32m[1mLinking CXX executable /home/meirelles/ws_moveit/devel/.private/moveit_tutorials/lib/moveit_tutorials/cylinder_segment[0m
+[100%] Built target cylinder_segment

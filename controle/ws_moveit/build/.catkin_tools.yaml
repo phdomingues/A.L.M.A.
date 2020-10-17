@@ -1,0 +1,6 @@
+devel_space: /home/meirelles/ws_moveit/devel
+install: false
+install_space: /home/meirelles/ws_moveit/install
+profile: default
+source_space: /home/meirelles/ws_moveit/src
+workspace: /home/meirelles/ws_moveit
