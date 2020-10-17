@@ -1,0 +1,21 @@
+<package>
+  <description brief="robot_control">
+
+     robot_control
+
+  </description>
+  <author>Meirelles</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/robot_control</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="moveit_commander"/>
+  <depend package="panda_moveit_config"/>
+  <depend package="pluginlib"/>
+  <depend package="tf2_geometry_msgs"/>
+
+</package>
+
+

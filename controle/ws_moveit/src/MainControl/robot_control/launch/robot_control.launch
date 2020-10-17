@@ -1,0 +1,12 @@
+<launch>
+
+  <include file="$(find panda_moveit_config)/launch/demo.launch" />
+
+  <node name="main_control" pkg="moveit_tutorials" type="main_control.py" respawn="false" output="screen">
+  </node>
+
+    <node name="move_robot_control" pkg="moveit_tutorials" type="move_robot_control.py" respawn="false" output="screen">
+  </node>
+	
+
+</launch>
